@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Bird</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Prevent scrollbars */
+    }
+    .container {
+      width: 540px;
+      height: 720px;
+      position: relative;
+    }
+    canvas {
+      display: block;
+      background-color: #f0f0f0;
+    }
+    .info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #333;
+      user-select: none;
+    }
+    .buttons {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .buttons button {
+      display: block;
+      width: 200px;
+      height: 50px;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+    <script src="bird.js"></script>
+    <script src="cube.js"></script>
+    <script src="gameEngine.js"></script>
+    <script src="gameUI.js"></script>
+  <div class="container">
+    <canvas id="gameCanvas" width="540" height="720"></canvas>
+    <div class="info">
+      <p id="score"></p>
+      <p id="record">Press mouse to control the bird</p>
+    </div>
+    <div id="buttons" class="buttons">
+      <button id="ezMode">EZ mode</button>
+      <button id="hardMode">Hard mode</button>
+      <button id="hellMode">Hell mode</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new GameUI()
+    });
+
+  </script>
+</body>
+</html>
