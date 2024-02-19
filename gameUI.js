@@ -6,15 +6,15 @@ class GameUI{
 
         // Handle button clicks
         ezModeBtn.addEventListener('click', function() {
-            GameUI.startGame(50, 0);
+            GameUI.startGame(25, 0);
         });
 
         hardModeBtn.addEventListener('click', function() {
-            GameUI.startGame(70, 1);
+            GameUI.startGame(35, 1);
         });
 
         hellModeBtn.addEventListener('click', function() {
-            GameUI.startGame(90, 2);
+            GameUI.startGame(45, 2);
         });
 
         document.addEventListener('mousedown', function() {
@@ -42,38 +42,22 @@ class GameUI{
         const engine = new GameEngine();
         engine.dt = 40;
 
+        var interval = null;
+        var pre = null;
         // Game loop
-        function gameLoop() {
-            // Update game state
-            engine.updateBird(bird);
-            engine.updateCubes(cubes);
-            engine.isHit(bird, cubes);
-
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw bird
-            ctx.fillStyle = 'yellow';
-            ctx.beginPath();
-            ctx.arc(bird.x, bird.y, bird.size / 2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.closePath();
-
-            // Draw cubes
-            ctx.fillStyle = 'green';
-            for (let i = 0; i < cubes.cubes.length; i++) {
-                const u = cubes.cubes[i].upCube;
-                const d = cubes.cubes[i].downCube;
-                ctx.fillRect(u.x, u.y, u.width, u.height);
-                ctx.fillRect(d.x, d.y, d.width, d.height);
-            }
-
-            // Update score and mode record
-            scoreText.textContent = 'Your score is ' + Math.floor(GameEngine.currentDist);
-            recordText.textContent = GameEngine.modesString[mode] + ' mode Record ' + Math.floor(GameEngine.recordDist[mode]);
-            
+        function gameLoop(now) {
             // Check game over condition
+            if(pre){
+                if(interval){
+                    interval = interval * 0.8 + (now - pre) * 0.2;
+                }else{
+                    interval = now - pre;
+                } 
+                engine.dt = interval;
+            }
+            pre = now;
             if (bird.isDead || cubes.isHit) {
+                clearInterval(interval);
                 const response = confirm('Your score is ' + Math.floor(GameEngine.currentDist) + '\nDo you want to replay?');
                 if (response) {
                     // Replay game
@@ -82,10 +66,32 @@ class GameUI{
                 } 
                 return;
             }
+            
+            engine.updateBird(bird);
+            engine.updateCubes(cubes);
+            engine.checkCollision(bird, cubes);
+
+            // Clear window
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            bird.draw(ctx);
+            cubes.draw(ctx);
+
+            // Update score and mode record
+            scoreText.textContent = 'Your score is ' + Math.floor(GameEngine.currentDist);
+            recordText.textContent = GameEngine.modesString[mode] + ' mode Record ' + Math.floor(GameEngine.recordDist[mode]);
+            
             requestAnimationFrame(gameLoop);
         }
+        
+        // Used for debug
+        // document.addEventListener('click', function(e) {
+        //     var x = e.clientX ;
+        //     var y = e.clientY;
+        //     console.log( "X is "+x+" and Y is "+y, e)
+        // });
 
         // Start game loop
-        gameLoop();
+        requestAnimationFrame(gameLoop);
     }
 }

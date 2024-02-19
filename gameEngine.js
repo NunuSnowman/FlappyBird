@@ -8,8 +8,8 @@ class GameEngine {
     static isPressing = false;
 
     constructor() {
-        this.gravity = 120;
-        this.antiGravity = -140;
+        this.gravity = 2500;
+        this.antiGravity = - this.gravity;
         this.dt = 40;
         this.cubeSpeed = 3;
         this.counter = 0;
@@ -23,41 +23,84 @@ class GameEngine {
         bird.updateBird(dt_minis, this.gravity, this.antiGravity, GameEngine.isPressing);
     }
 
-    isHit(bird, cubes) {
+    checkCollision(bird, cubes) {
         for (let i = 0; i < cubes.cubes.length; i++) {
-            if (this._isHit(bird, cubes.cubes[i].upCube) || this._isHit(bird, cubes.cubes[i].downCube)) {
+            if (this._isHit(bird, cubes.cubes[i].topCube) || this._isHit(bird, cubes.cubes[i].botCube)) {
                 cubes.isHit = true;
                 return;
             }
         }
+        bird.isOutOfWindow();
         GameEngine.currentDist += this.dt / 1000;
         GameEngine.recordDist[GameEngine.modeIndex] = GameEngine.recordDist[GameEngine.modeIndex] > GameEngine.currentDist ? GameEngine.recordDist[GameEngine.modeIndex] : GameEngine.currentDist;
     }
 
-    _isHit(bird, cube) {
-        let p1_x = bird.x;
-        let p1_y = bird.y + Bird.size / 2.0;
-        if (this._isInRect(p1_x, p1_y, cube))
+    _isHit(circle, rect) {
+        if(this._isInRect(circle, rect)){
+            console.log("center of circle inside of rect", circle, rect);
             return true;
-        let p2_x = bird.x + Bird.size / 2.0;
-        let p2_y = bird.y;
-        if (this._isInRect(p2_x, p2_y, cube))
+        }
+        let x1 = rect.x;
+        let x2 = rect.x + rect.width;
+        let y1 = rect.y;
+        let y2 = rect.y + rect.height;
+        
+        if(this._segmentIntersectsCircle(x1,y1, x1, y2, circle)){
+            console.log("hit left side of cube", circle, rect)
             return true;
-        let p3_x = bird.x + Bird.size;
-        let p3_y = bird.y + Bird.size / 2.0;
-        if (this._isInRect(p3_x, p3_y, cube))
+        }
+        if(this._segmentIntersectsCircle(x1, y2, x2,y2, circle)){
+            console.log("hit bot side of cube", circle, rect)
             return true;
-        let p4_x = bird.x + Bird.size / 2.0;
-        let p4_y = bird.y + Bird.size;
-        if (this._isInRect(p4_x, p4_y, cube))
+            
+        }
+        if(this._segmentIntersectsCircle(x2,y2, x2, y1, circle)){
+            console.log("hit right side of cube", circle, rect)
             return true;
+            
+        }
+        if(this._segmentIntersectsCircle(x2,y1, x1,y1, circle)){
+            console.log("hit top side of cube", circle, rect)
+            return true;
+        }
         return false;
     }
 
-    _isInRect(x, y, c) {
-        return x > c.x && x < c.x + c.width && y > c.y && y < c.y + c.height;
+    _isInRect(circle, rect) {
+        let x1 = rect.x;
+        let x2 = rect.x + rect.width;
+        let y1 = rect.y;
+        let y2 = rect.y + rect.height;
+
+        return x1 <= circle.x && circle.x<=x2 && y1 <= circle.y && circle.y <= y2; 
     }
 
+    _segmentIntersectsCircle(x1, y1, x2, y2, circle) {
+        let circleX = circle.x, circleY = circle.y, circleRadius = circle.r;
+        // Calculate the vector representing the segment
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+    
+        // Calculate the vector representing the line segment's start point to the circle's center
+        let fx = circleX - x1;
+        let fy = circleY - y1;
+    
+        // Calculate the dot product of the two vectors
+        let t = (dx * fx + dy * fy) / (dx * dx + dy * dy);
+    
+        // Limit t to the range [0,1] to ensure the closest point is on the line segment
+        t = Math.max(0, Math.min(1, t));
+    
+        // Calculate the closest point on the line segment to the circle's center
+        let closestX = x1 + t * dx;
+        let closestY = y1 + t * dy;
+    
+        // Calculate the distance between the closest point and the circle's center
+        let distanceSquared = (closestX - circleX) * (closestX - circleX) + (closestY - circleY) * (closestY - circleY);
+    
+        // Check if the distance is less than or equal to the circle's radius squared
+        return distanceSquared <= circleRadius * circleRadius;
+    }
 
     updateCubes(cubes) {
         cubes.moveLeft(this.cubeSpeed);

@@ -1,10 +1,11 @@
 class Bird {
     constructor(size) {
-        this.x = GameEngine.width / 2;
-        this.y = GameEngine.height / 2;
+        this.x = GameEngine.width / 2; // bird center x
+        this.y = GameEngine.height / 2; // bird center y
+        this.size = size; //radius of bird
+        this.r = size;
         this.vy = 0;
         this.isDead = false;
-        this.size = size; 
     }
 
     updateBird(deltaTime, g, liftGravity, pressing) {
@@ -19,15 +20,29 @@ class Bird {
             this.vy = this.vy + g * dt;
         }
         this.y = this.y + this.vy * dt;
-        if (this.y > GameEngine.height - this.size) {
+    }
+
+    isOutOfWindow(){
+        if (this.y + this.size > GameEngine.height ) {
             this.y = GameEngine.height - this.size;
-            console.log("Bird hit ceiling")
+            console.log("Bird hit ground", this)
             this.isDead = true;
+            return true;
         }
-        if (this.y < 0) {
-            console.log("Bird hit ground")
-            this.y = 0;
+        if (this.y - this.size < 0) {
+            console.log("Bird hit ceiling", this)
+            this.y = this.size;
             this.isDead = true;
+            return true;
         }
+        return false;
+    }
+    
+    draw(ctx){
+        ctx.fillStyle = 'yellow';
+        ctx.beginPath();
+        ctx.arc(this.x , this.y , this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
     }
 }

@@ -1,4 +1,7 @@
 
+/**
+ * One rectangle cube.
+ */
 class Cube {
     constructor(x, y, width, height) {
         this.x = x;
@@ -11,7 +14,26 @@ class Cube {
         return this.x + this.width < 0;
     }
 }
+/**
+ * A pair of cube, one on the top, one on the bottom
+ */
+class CubePair {
+    constructor(topHeight, botHeight, width) {
+        const windowWidth = GameEngine.width;
+        const windowHeight = GameEngine.height;
+        this.topCube = new Cube(windowWidth, 0, width, topHeight);
+        this.botCube = new Cube(windowWidth, windowHeight - botHeight, width, botHeight);
+    }
 
+    moveLeft(dx) {
+        this.topCube.x -= dx;
+        this.botCube.x -= dx;
+    }
+}
+
+/**
+ * All cubes in the game.
+ */
 class Cubes {
     constructor() {
         this.isHit = false;
@@ -27,20 +49,17 @@ class Cubes {
         for (let i = 0; i < this.cubes.length; i++) {
             this.cubes[i].moveLeft(dx);
         }
-        this.cubes = this.cubes.filter(cubePair => !cubePair.upCube.isCubeOutOfWindow());
+        this.cubes = this.cubes.filter(cubePair => !cubePair.topCube.isCubeOutOfWindow());
+    }
+
+    draw(ctx){
+        ctx.fillStyle = 'green';
+        for (let i = 0; i < this.cubes.length; i++) {
+            const top = this.cubes[i].topCube;
+            const bot = this.cubes[i].botCube;
+            ctx.fillRect(top.x, top.y, top.width, top.height);
+            ctx.fillRect(bot.x, bot.y, bot.width, bot.height);
+        }
     }
 }
 
-class CubePair {
-    constructor(upCubeHeight, downCubeHeight, width) {
-        const windowWidth = GameEngine.width;
-        const windowHeight = GameEngine.height;
-        this.upCube = new Cube(windowWidth, 0, width, upCubeHeight);
-        this.downCube = new Cube(windowWidth, windowHeight - downCubeHeight, width, downCubeHeight);
-    }
-
-    moveLeft(dx) {
-        this.upCube.x -= dx;
-        this.downCube.x -= dx;
-    }
-}
