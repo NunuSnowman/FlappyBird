@@ -12,9 +12,11 @@
       overflow: hidden; /* Prevent scrollbars */
     }
     .container {
-      width: 540px;
-      height: 720px;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
     canvas {
       display: block;
@@ -48,7 +50,7 @@
     <script src="gameEngine.js"></script>
     <script src="gameUI.js"></script>
   <div class="container">
-    <canvas id="gameCanvas" width="540" height="720"></canvas>
+    <canvas id="gameCanvas" width="800" height="800"></canvas>
     <div class="info">
       <p id="score"></p>
       <p id="record">Press mouse to control the bird</p>
