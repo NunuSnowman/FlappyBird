@@ -1,14 +1,15 @@
 class GameEngine {
     static modeIndex = 0;
     static modesString = ["EZ", "Hard", "Hell"];
-    static recordDist = [0, 0, 0];
+    static modesCoeff = [1, 1.25, 1.5];
+    static recordDist = 0;
     static currentDist = 0;
     static width = 0;
     static height = 0;
     static isPressing = false;
 
     constructor() {
-        this.gravity = 2500;
+        this.gravity = 2000;
         this.antiGravity = - this.gravity;
         this.dt = 40;
         this.cubeSpeed = 3;
@@ -32,7 +33,7 @@ class GameEngine {
         }
         bird.isOutOfWindow();
         GameEngine.currentDist += this.dt / 1000;
-        GameEngine.recordDist[GameEngine.modeIndex] = GameEngine.recordDist[GameEngine.modeIndex] > GameEngine.currentDist ? GameEngine.recordDist[GameEngine.modeIndex] : GameEngine.currentDist;
+        GameEngine.recordDist = GameEngine.recordDist > GameEngine.currentDist ? GameEngine.recordDist: GameEngine.currentDist;
     }
 
     _isHit(circle, rect) {
@@ -111,13 +112,5 @@ class GameEngine {
         }
         this.counter--;
 
-        // game becomes hard for every 10 distance
-        if (GameEngine.currentDist % 10 === 9 && GameEngine.currentDist < this.maxSpeedDistance && GameEngine.currentDist < 60) {
-            console.log("make game harder")
-            this.cubeSpeed++;
-            this.cubeInterval -= 2;
-            this.cubeVerticalDist -= 10;
-            this.maxSpeedDistance = GameEngine.currentDist;
-        }
     }
 }

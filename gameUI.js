@@ -35,6 +35,7 @@ class GameUI{
         document.getElementById('buttons').style.display = 'none';
         GameEngine.width = canvas.width;
         GameEngine.height = canvas.height;
+        GameEngine.modeIndex = mode;
 
         // Initialize game components
         const bird = new Bird(birdSize);
@@ -58,12 +59,10 @@ class GameUI{
             pre = now;
             if (bird.isDead || cubes.isHit) {
                 clearInterval(interval);
-                const response = confirm('Your score is ' + Math.floor(GameEngine.currentDist) + '\nDo you want to replay?');
-                if (response) {
-                    // Replay game
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    document.getElementById('buttons').style.display = 'block';
-                } 
+                const response = confirm('Your score is ' + Math.floor(GameEngine.currentDist));
+                // Replay game
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                document.getElementById('buttons').style.display = 'block';
                 return;
             }
             
@@ -79,7 +78,7 @@ class GameUI{
 
             // Update score and mode record
             scoreText.textContent = 'Your score is ' + Math.floor(GameEngine.currentDist);
-            recordText.textContent = GameEngine.modesString[mode] + ' mode Record ' + Math.floor(GameEngine.recordDist[mode]);
+            recordText.textContent = 'Record ' + Math.floor(GameEngine.recordDist);
             
             requestAnimationFrame(gameLoop);
         }
