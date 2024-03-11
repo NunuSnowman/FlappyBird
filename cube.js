@@ -57,7 +57,27 @@ class Cubes {
         for (let i = 0; i < this.cubes.length; i++) {
             const top = this.cubes[i].topCube;
             const bot = this.cubes[i].botCube;
+
+            // Draw top cube
+            ctx.fillStyle = 'rgb(0, 150, 0)';
             ctx.fillRect(top.x, top.y, top.width, top.height);
+
+            // Draw gradient for depth effect
+            let gradient = ctx.createLinearGradient(top.x, top.y, top.x + top.width, top.y);
+            gradient.addColorStop(0, 'rgba(0, 255, 0, 0.7)');
+            gradient.addColorStop(1, 'rgba(0, 255, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(top.x, top.y, top.width, top.height);
+
+            // Draw bottom cube
+            ctx.fillStyle = 'rgb(0, 150, 0)';
+            ctx.fillRect(bot.x, bot.y, bot.width, bot.height);
+
+            // Draw gradient for depth effect
+            gradient = ctx.createLinearGradient(bot.x, bot.y + bot.height, bot.x + bot.width, bot.y + bot.height);
+            gradient.addColorStop(0, 'rgba(0, 255, 0, 0.7)');
+            gradient.addColorStop(1, 'rgba(0, 255, 0, 0)');
+            ctx.fillStyle = gradient;
             ctx.fillRect(bot.x, bot.y, bot.width, bot.height);
         }
     }

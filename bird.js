@@ -39,9 +39,30 @@ class Bird {
     }
     
     draw(ctx){
+        this.drawCuteBird(ctx, this.x, this.y, this.size)
+    }
+    drawCuteBird(ctx, x, y, size) {
+        
+        // Draw bird body
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
         ctx.arc(this.x , this.y , this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+    
+        // Draw beak
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.size * 0.8, this.y);
+        ctx.lineTo(this.x + this.size * 1.2, this.y - this.size * 0.2);
+        ctx.lineTo(this.x + this.size * 1.2, this.y + this.size * 0.2);
+        ctx.fillStyle = 'orange';
+        ctx.fill();
+        ctx.closePath();
+    
+        // Draw eye
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(this.x + this.size * 0.4, this.y - this.size * 0.2, this.size * 0.1, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }
